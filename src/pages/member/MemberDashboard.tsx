@@ -26,7 +26,7 @@ export default function MemberDashboard() {
   const { data, isLoading, isError, refetch } = useQuery({ queryKey: queryKeys.memberDashboard, queryFn: () => mockMember.dashboard() });
   if (isLoading) return <LoadingState text="Loading your member dashboard…" />;
   if (isError || !data) return <ErrorState message="We couldn't load your dashboard." onRetry={() => refetch()} />;
-  const firstName = user?.name?.split(' ')[0] ?? 'Member'; const outstanding = Math.max(data.penalties_total, 0);
+  const firstName = user?.name?.replace(/^(Dr\.?|Mr\.?|Mrs\.?|Ms\.?)\s+/i, '').split(' ')[0] ?? 'Member'; const outstanding = Math.max(data.penalties_total, 0);
   const hour = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hourCycle: 'h23', timeZone: 'Africa/Nairobi' }).format(new Date()));
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   const openPayment = (amount: number) => { setPayAmount(amount); setPaymentMenuOpen(false); setPayOpen(true); };
