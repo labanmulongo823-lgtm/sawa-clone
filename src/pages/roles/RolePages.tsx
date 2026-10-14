@@ -105,7 +105,8 @@ export function SecretaryDashboard() {
     queryFn: () => mockSecretary.dashboard(),
   });
   if (isLoading) return <LoadingState />;
-  const d = data!;
+  if (!data) return <ErrorState message="Unable to load records." />;
+  const d = data;
 
   const greeting = (() => {
     const h = new Date().getHours();
@@ -145,7 +146,7 @@ export function SecretaryDashboard() {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard label="Pending Review" value={d.pending_minutes} icon={Clock} accent="bg-warning-50 text-warning-600" delta="Action" positive={false} />
-        <KpiCard label="Approved" value={d.approved_minutes} icon={CheckCircle} accent="bg-success-50 text-success-600" delta="+3" positive />
+        <KpiCard label="Approved" value={d.approved_minutes} icon={CheckCircle} accent="bg-success-50 text-success-600" />
         <KpiCard label="Upcoming Meetings" value={d.upcoming_meetings} icon={CalendarDays} accent="bg-secondary-50 text-secondary-600" />
         <KpiCard label="Total Minutes" value={d.total_minutes} icon={FileText} accent="bg-primary-50 text-primary-600" />
       </div>
@@ -1158,7 +1159,8 @@ export function ViceSecretaryDashboard() {
   const { user } = useAuth();
   const { data, isLoading } = useQuery({ queryKey: queryKeys.viceSecretaryDashboard, queryFn: () => mockViceSecretary.dashboard() });
   if (isLoading) return <LoadingState />;
-  const d = data!;
+  if (!data) return <ErrorState message="Unable to load records." />;
+  const d = data;
 
   const greeting = (() => {
     const h = new Date().getHours();
@@ -1240,7 +1242,8 @@ export function ChairpersonDashboard() {
   const { user } = useAuth();
   const { data, isLoading } = useQuery({ queryKey: queryKeys.chairpersonDashboard, queryFn: () => mockChairperson.dashboard() });
   if (isLoading) return <LoadingState />;
-  const d = data!;
+  if (!data) return <ErrorState message="Unable to load records." />;
+  const d = data;
 
   const greeting = (() => {
     const h = new Date().getHours();
@@ -1281,7 +1284,7 @@ export function ChairpersonDashboard() {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard label="Pending Approvals" value={d.pending_approvals} icon={Clock} accent="bg-warning-50 text-warning-600" delta="Action" positive={false} />
-        <KpiCard label="Approved" value={d.approved_count} icon={CheckCircle} accent="bg-success-50 text-success-600" delta="+3" positive />
+        <KpiCard label="Approved" value={d.approved_count} icon={CheckCircle} accent="bg-success-50 text-success-600" />
         <KpiCard label="Rejected" value={d.rejected_count} icon={XCircle} accent="bg-error-50 text-error-500" />
         <KpiCard label="Total" value={total} icon={FileText} accent="bg-primary-50 text-primary-600" />
       </div>
@@ -1457,7 +1460,8 @@ export function OfficeDashboard() {
   const { user } = useAuth();
   const { data, isLoading } = useQuery({ queryKey: queryKeys.officeDashboard, queryFn: () => mockOffice.dashboard() });
   if (isLoading) return <LoadingState />;
-  const d = data!;
+  if (!data) return <ErrorState message="Unable to load records." />;
+  const d = data;
 
   const greeting = (() => {
     const h = new Date().getHours();

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@/lib/router-compat';
 import { LayoutDashboard, Users, Coins, AlertCircle, TrendingUp, ArrowRight } from 'lucide-react';
+import { LineChart } from '@/components/Charts';
 import { mockAdmin } from '@/api/mock';
 import { queryKeys } from '@/lib/query';
 import { Card, StatCard, LoadingState, ErrorState, PageHeader, Avatar, Badge } from '@/components/ui';
@@ -13,10 +14,10 @@ export default function AdminDashboard() {
   });
 
   if (isLoading) return <LoadingState />;
-  if (isError) return <ErrorState message="Failed to load dashboard" onRetry={refetch} />;
+  if (isError || !data) return <ErrorState message="Failed to load dashboard" onRetry={refetch} />;
 
-  const d = data!;
-  const maxAmount = Math.max(...d.contributions_trend.map(m => m.amount), 1);
+  const d = data;
+
 
   return (
     <div>
@@ -32,14 +33,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
         <Card className="p-5 lg:col-span-2">
           <h3 className="text-sm font-bold mb-4">Contributions Trend</h3>
-          <div className="flex items-end justify-between gap-2 h-48">
-            {d.contributions_trend.map((m, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                <div className="w-full rounded-t-lg bg-primary-600 hover:bg-primary-700 transition-colors" style={{ height: `${(m.amount / maxAmount) * 100}%` }} title={formatCurrency(m.amount)} />
-                <span className="text-xs text-neutral-400">{m.month}</span>
-              </div>
-            ))}
-          </div>
+          <LineChart series={[{ label: 'Contributions', color: 'var(--brand)', points: d.contributions_trend.map(m => ({ label: m.month, value: m.amount })) }]} height={220} />
         </Card>
 
         <Card className="p-5">

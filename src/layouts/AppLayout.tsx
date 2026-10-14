@@ -16,6 +16,8 @@ import { navConfig, memberBottomNav, type NavItem } from '@/config/nav';
 import { classNames, initials } from '@/lib/format';
 import type { UserRole } from '@/types';
 import { GroupChatWidget } from '@/components/GroupChatWidget';
+import { AppearanceControls } from '@/components/AppearanceProvider';
+import { Button } from '@/components/ui';
 
 const iconMap: Record<string, LucideIcon> = {
   LayoutDashboard, Calendar, FileText, Download, Receipt, Newspaper,
@@ -39,6 +41,7 @@ export function AppLayout({ children }: { children?: ReactNode }) {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   if (!user) return null;
 
@@ -72,18 +75,18 @@ export function AppLayout({ children }: { children?: ReactNode }) {
   return (
     <div className="private-shell min-h-screen bg-neutral-50 flex">
       {/* Desktop Sidebar — N26 dark surface */}
-      <aside className="hidden lg:flex w-64 flex-col bg-neutral-950 fixed inset-y-0 left-0 z-30">
+      <aside className={classNames('portal-sidebar hidden lg:flex w-64 flex-col fixed inset-y-0 left-0 z-30', collapsed && 'is-collapsed')}>
         <div className="px-5 py-5 border-b border-white/5">
           <Link to="/" className="flex items-center gap-2.5">
             <img src="/images/image%20copy%203.png" alt="KHWWC logo" className="w-10 h-10 rounded-full object-cover bg-white" />
-            <div>
+            <div className="sidebar-brand-copy">
               <p className="text-sm font-bold text-white leading-tight">KHWWC</p>
               <p className="text-2xs text-neutral-500 leading-tight">Welfare Management</p>
             </div>
           </Link>
         </div>
 
-        <div className="px-3 py-3 border-b border-white/5">
+        <div className="sidebar-profile px-3 py-3 border-b border-white/5">
           <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg bg-white/5">
             <div className="w-9 h-9 rounded-full bg-primary-500 text-white font-semibold flex items-center justify-center text-sm flex-shrink-0">
               {initials(user.name)}
@@ -100,6 +103,7 @@ export function AppLayout({ children }: { children?: ReactNode }) {
             <Link
               key={item.path}
               to={item.path}
+              title={item.label}
               className={classNames(
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
                 isActive(item.path)
@@ -108,12 +112,12 @@ export function AppLayout({ children }: { children?: ReactNode }) {
               )}
             >
               <NavIcon name={item.icon} size={18} className={isActive(item.path) ? 'text-white' : 'text-neutral-500'} />
-              <span className="truncate">{item.label}</span>
+              <span className="sidebar-label truncate">{item.label}</span>
             </Link>
           ))}
         </nav>
 
-        <div className="px-3 py-3 border-t border-white/5">
+        <div className="sidebar-footer px-3 py-3 border-t border-white/5">
           <div className="relative">
             <button
               onClick={() => setRoleMenuOpen(!roleMenuOpen)}
@@ -121,7 +125,7 @@ export function AppLayout({ children }: { children?: ReactNode }) {
             >
               <span className="flex items-center gap-2">
                 <UserCog size={16} className="text-neutral-500" />
-                <span>Switch Role</span>
+                <span className="sidebar-label">Switch Role</span>
               </span>
               <ChevronDown size={14} className={classNames('transition-transform', roleMenuOpen && 'rotate-180')} />
             </button>
@@ -145,13 +149,13 @@ export function AppLayout({ children }: { children?: ReactNode }) {
           <button onClick={handleModeToggle} className="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg text-sm text-neutral-400 hover:bg-white/5 hover:text-white transition-colors">
             <span className="flex items-center gap-2">
               {demoMode ? <FlaskConical size={16} /> : <Cloud size={16} />}
-              <span>{demoMode ? 'Demo mode' : 'Production mode'}</span>
+              <span className="sidebar-label">{demoMode ? 'Demo mode' : 'Production mode'}</span>
             </span>
             {demoMode ? <ToggleRight size={18} className="text-primary-400" /> : <ToggleLeft size={18} />}
           </button>
           <button onClick={handleLogout} className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-error-400 hover:bg-error-500/10 transition-colors">
             <LogOut size={16} />
-            <span>Sign Out</span>
+            <span className="sidebar-label">Sign Out</span>
           </button>
         </div>
       </aside>
@@ -160,7 +164,7 @@ export function AppLayout({ children }: { children?: ReactNode }) {
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-40 animate-fade-in" onClick={() => setSidebarOpen(false)}>
           <div className="absolute inset-0 bg-neutral-950/60 backdrop-blur-sm" />
-          <aside className="absolute left-0 inset-y-0 w-72 bg-neutral-950 shadow-float-lg overflow-y-auto scrollbar-hide animate-slide-up" onClick={e => e.stopPropagation()}>
+          <aside className="portal-sidebar absolute left-0 inset-y-0 w-72 shadow-float-lg overflow-y-auto scrollbar-hide animate-slide-up" onClick={e => e.stopPropagation()}>
             <div className="px-5 py-5 border-b border-white/5 flex items-center justify-between">
               <Link to="/" className="flex items-center gap-2.5" onClick={() => setSidebarOpen(false)}>
                 <img src="/images/image%20copy%203.png" alt="KHWWC logo" className="w-10 h-10 rounded-full object-cover bg-white" />
@@ -173,7 +177,7 @@ export function AppLayout({ children }: { children?: ReactNode }) {
                 <X size={20} />
               </button>
             </div>
-            <div className="px-3 py-3 border-b border-white/5">
+            <div className="sidebar-profile px-3 py-3 border-b border-white/5">
               <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg bg-white/5">
                 <div className="w-9 h-9 rounded-full bg-primary-500 text-white font-semibold flex items-center justify-center text-sm">
                   {initials(user.name)}
@@ -196,7 +200,7 @@ export function AppLayout({ children }: { children?: ReactNode }) {
                   )}
                 >
                   <NavIcon name={item.icon} size={18} className={isActive(item.path) ? 'text-white' : 'text-neutral-500'} />
-                  <span className="truncate">{item.label}</span>
+                  <span className="sidebar-label truncate">{item.label}</span>
                 </Link>
               ))}
             </nav>
@@ -221,13 +225,13 @@ export function AppLayout({ children }: { children?: ReactNode }) {
               <button onClick={handleModeToggle} className="w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg text-sm text-neutral-400 hover:bg-white/5 hover:text-white">
                 <span className="flex items-center gap-2">
                   {demoMode ? <FlaskConical size={16} /> : <Cloud size={16} />}
-                  <span>{demoMode ? 'Demo mode' : 'Production mode'}</span>
+                  <span className="sidebar-label">{demoMode ? 'Demo mode' : 'Production mode'}</span>
                 </span>
                 {demoMode ? <ToggleRight size={18} className="text-primary-400" /> : <ToggleLeft size={18} />}
               </button>
               <button onClick={handleLogout} className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-error-400 hover:bg-error-500/10">
                 <LogOut size={16} />
-                <span>Sign Out</span>
+                <span className="sidebar-label">Sign Out</span>
               </button>
             </div>
           </aside>
@@ -235,9 +239,20 @@ export function AppLayout({ children }: { children?: ReactNode }) {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-64 flex flex-col min-w-0">
+      <div className={classNames('portal-main flex-1 flex flex-col min-w-0', collapsed && 'is-collapsed')}>
+        <header className="portal-topbar hidden lg:flex items-center justify-between px-8 gap-4">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" onClick={() => setCollapsed(value => !value)} aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}><Menu size={20} /></Button>
+            <div><p className="text-sm font-semibold">{roleLabels[role]} workspace</p><p className="text-xs text-muted-foreground mt-1">Kirinyaga Healthcare Workers Welfare</p></div>
+          </div>
+          <div className="flex items-center gap-6">
+            <AppearanceControls />
+            <span className="text-xs text-muted-foreground">{demoMode ? 'Demo' : 'Live'} · KHWWC</span>
+            <Link to={roleDashboardPath[role]} className="account-avatar flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold" title={user.name}>{initials(user.name)}</Link>
+          </div>
+        </header>
         {/* Mobile Header */}
-        <header className="lg:hidden sticky top-0 z-20 bg-white border-b border-neutral-200 px-4 py-3 flex items-center justify-between safe-top">
+        <header className="portal-topbar lg:hidden sticky top-0 z-20 px-4 py-3 flex items-center justify-between safe-top">
           <button onClick={() => setSidebarOpen(true)} className="btn-ghost p-1.5 -ml-1.5" aria-label="Open menu">
             <Menu size={22} />
           </button>
@@ -245,14 +260,11 @@ export function AppLayout({ children }: { children?: ReactNode }) {
             <img src="/images/image%20copy%203.png" alt="KHWWC logo" className="w-8 h-8 rounded-full object-cover bg-white" />
             <span className="text-sm font-bold text-neutral-900">KHWWC</span>
           </Link>
-          <Link to="/member/notifications" className="btn-ghost p-1.5 -mr-1.5 relative" aria-label="Notifications">
-            <Bell size={20} />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-error-500 rounded-full" />
-          </Link>
+          <AppearanceControls />
         </header>
 
         {/* Page Content */}
-        <main className={classNames('flex-1 px-4 py-5 sm:px-6 lg:px-8', isMember && 'pb-20 lg:pb-5')}>
+        <main className={classNames('portal-content flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8', isMember && 'pb-20 lg:pb-5')}>
           {children || <Outlet />}
         </main>
 
