@@ -24,10 +24,10 @@ export function StatCard({
     error: 'bg-error-50 text-error-700',
   };
   return (
-    <Card className="p-4 sm:p-5">
+    <Card className="stat-card p-4 sm:p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-medium text-neutral-500 truncate">{label}</p>
+          <p className="text-xs font-medium text-neutral-500">{label}</p>
           <p className="mt-1 text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">{value}</p>
           {trend && (
             <p className={classNames('mt-1 text-xs font-medium', trend.positive ? 'text-success-600' : 'text-error-600')}>
@@ -187,11 +187,11 @@ export function SkeletonRow() {
 
 export function PageHeader({ title, subtitle, action, icon }: { title: string; subtitle?: string; action?: ReactNode; icon?: ReactNode }) {
   return (
-    <div className="flex items-start justify-between gap-4 mb-5">
+    <div className="page-heading flex flex-wrap items-start justify-between gap-4 mb-5">
       <div className="flex items-start gap-3 min-w-0">
         {icon && <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary-50 text-primary-700 flex items-center justify-center">{icon}</div>}
         <div className="min-w-0">
-          <h1 className="text-lg sm:text-xl font-bold text-neutral-900 tracking-tight truncate">{title}</h1>
+          <h1 className="text-lg sm:text-xl font-bold text-neutral-900">{title}</h1>
           {subtitle && <p className="mt-0.5 text-sm text-neutral-500">{subtitle}</p>}
         </div>
       </div>

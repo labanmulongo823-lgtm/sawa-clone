@@ -11,3 +11,5 @@
 
 - The cloned KHWWC app (src/SawaApp.tsx) renders client-only via src/routes/index.tsx and $.tsx; its react-router-style imports go through src/lib/router-compat.tsx (TanStack-backed shim) — keeps the original source nearly untouched.
 - Styling uses the legacy tailwind.config.js via @config in src/styles.css — preserves the original design classes.
+- App appearance is owned by the root AppearanceProvider and semantic CSS tokens; existing legacy color classes are mapped to those tokens so every cloned page shares the theme without changing API contracts.
+- Store the morning screen's last displayed Nairobi calendar day only in device storage; this is a presentation preference, not business data.
