@@ -1,4 +1,5 @@
 # Visual transformation
+- [x] Make exposed text readable across themes and remove the floating login card while preserving the full-screen floral background.
 - [x] Add floral background rotation and coordinated themes across existing pages.
 - [x] Add the once-daily five-second morning screen.
 - [x] Restyle sign-in, shared navigation and role dashboards while preserving all data and APIs.
