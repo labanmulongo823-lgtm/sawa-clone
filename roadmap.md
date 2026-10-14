@@ -1,4 +1,5 @@
 # Visual transformation
+- [ ] Navigate from Make a payment to penalty, welfare contribution and fund drive; allow statement viewing in Downloads.
 - [x] Polish the members chat and floating window to match the app theme; verify conversations and sending messages in demo mode on phone and desktop.
 - [x] Make exposed text readable across themes and remove the floating login card while preserving the full-screen floral background.
 - [x] Add floral background rotation and coordinated themes across existing pages.
