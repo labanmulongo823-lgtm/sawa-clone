@@ -240,28 +240,11 @@ export function AppLayout({ children }: { children?: ReactNode }) {
 
       {/* Main Content */}
       <div className={classNames('portal-main flex-1 flex flex-col min-w-0', collapsed && 'is-collapsed')}>
-        <header className="portal-topbar hidden lg:flex items-center justify-between px-8 gap-4">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => setCollapsed(value => !value)} aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}><Menu size={20} /></Button>
-            <div><p className="text-sm font-semibold">{roleLabels[role]} workspace</p><p className="text-xs text-muted-foreground mt-1">Kirinyaga Healthcare Workers Welfare</p></div>
-          </div>
-          <div className="flex items-center gap-6">
-            <AppearanceControls />
-            <span className="text-xs text-muted-foreground">{demoMode ? 'Demo' : 'Live'} · KHWWC</span>
-            <Link to={roleDashboardPath[role]} className="account-avatar flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold" title={user.name}>{initials(user.name)}</Link>
-          </div>
-        </header>
-        {/* Mobile Header */}
-        <header className="portal-topbar lg:hidden sticky top-0 z-20 px-4 py-3 flex items-center justify-between safe-top">
-          <button onClick={() => setSidebarOpen(true)} className="btn-ghost p-1.5 -ml-1.5" aria-label="Open menu">
-            <Menu size={22} />
-          </button>
-          <Link to="/" className="flex items-center gap-2">
-            <img src="/images/image%20copy%203.png" alt="KHWWC logo" className="w-8 h-8 rounded-full object-cover bg-white" />
-            <span className="text-sm font-bold text-neutral-900">KHWWC</span>
-          </Link>
+        <div className="flex items-center justify-between px-4 pt-3 sm:px-6 lg:px-8 gap-4">
+          <Button variant="ghost" className="lg:hidden p-1.5" onClick={() => setSidebarOpen(true)} aria-label="Open menu" title="Open menu"><Menu size={22} /></Button>
+          <Button variant="ghost" className="hidden lg:inline-flex p-1.5" onClick={() => setCollapsed(value => !value)} aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}><Menu size={20} /></Button>
           <AppearanceControls />
-        </header>
+        </div>
 
         {/* Page Content */}
         <main className={classNames('portal-content flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8', isMember && 'pb-20 lg:pb-5')}>
