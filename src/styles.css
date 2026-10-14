@@ -205,6 +205,25 @@ h1,h2,h3,h4 { font-family: 'Manrope', sans-serif; }
 .private-shell > main, .portal-main { min-width: 0; }
 .portal-sidebar nav a:not(.bg-primary-500) { background: transparent; }
 .private-shell .tracking-tight, .public-shell .tracking-tight { letter-spacing: 0; }
+.member-chat { background: var(--glass); color: var(--ink); text-shadow: none; border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow-panel); }
+.member-chat-page { height: calc(100dvh - 150px); min-height: 360px; }
+.member-chat > .chat-toolbar { background: var(--brand-deep); color: var(--on-brand); border-bottom: 1px solid var(--line); flex-shrink: 0; }
+.chat-toolbar .chat-notifications, .chat-toolbar h1, .chat-toolbar p, .chat-toolbar [class*="text-white"] { color: var(--on-brand); }
+.chat-toolbar .chat-notifications:hover { background: var(--brand); color: var(--on-brand); }
+.member-chat > div:nth-child(2), .member-chat > div:nth-child(2) > div { min-height: 0; }
+.member-chat [class*="bg-[#faf9fe]"] { background: transparent; }
+.member-chat [class*="bg-[#6c55c7]"] { background: var(--brand); color: var(--on-brand); }
+.member-chat [class*="bg-[#45c678]"] { background: var(--positive); }
+.member-chat .chat-bubble { overflow-wrap: anywhere; box-shadow: var(--shadow-panel); }
+.member-chat .chat-bubble.bg-primary-500, .member-chat .chat-bubble.bg-primary-500 [class*="text-white"] { color: var(--on-brand); }
+.member-chat .chat-bubble.bg-primary-500 p:last-of-type { opacity: .85; }
+.member-chat .chat-bubble .group-hover\:opacity-100 { max-width: 100%; }
+.member-chat textarea { min-width: 0; }
+.chat-window { background: var(--canvas); box-shadow: var(--shadow-panel); }
+.chat-window .member-chat { border-radius: 0; }
+.chat-window .chat-toolbar { padding-right: 60px; }
+.chat-launcher.btn-primary { border-radius: 999px; }
+@media (hover: none) { .member-chat .chat-bubble > .absolute { position: static; opacity: 1; margin-top: 8px; }.member-chat .chat-bubble > .absolute > button { min-width: 32px; min-height: 32px; } }
 @media (min-width: 1024px) { .private-shell > .portal-sidebar { width: 244px; }.portal-main { margin-left: 244px; }.portal-main.is-collapsed { margin-left: 76px; }.private-shell > .portal-sidebar.is-collapsed { width: 76px; }.portal-sidebar.is-collapsed .sidebar-label,.portal-sidebar.is-collapsed .sidebar-profile,.portal-sidebar.is-collapsed .sidebar-brand-copy { display: none; }.portal-sidebar.is-collapsed nav a { justify-content: center; padding-left: 0; padding-right: 0; }.portal-sidebar.is-collapsed .sidebar-footer { padding: 8px; }.portal-sidebar.is-collapsed .sidebar-footer button { justify-content: center; padding: 12px 6px; }.portal-sidebar.is-collapsed .sidebar-footer button > span { gap: 0; }.portal-sidebar.is-collapsed .sidebar-footer button > svg:last-child:not(:first-child) { display: none; } }
 @media (max-width: 1023px) { .portal-topbar { min-height: 65px; }.member-shortcuts { grid-template-columns: repeat(3,minmax(0,1fr)); }.member-overview { grid-template-columns: 1fr; }.member-balance .balance-number { font-size: 34px; }.auth-page { justify-content: center; padding: 28px 20px; }.auth-panel { padding: 30px; }.auth-page::before { display: none; }.page-heading h1 { font-size: 23px; } }
 @media (max-width: 480px) { .portal-content { padding-left: 16px; padding-right: 16px; }.auth-panel { padding: 26px; }.member-shortcuts { gap: 9px; }.member-shortcut { font-size: 12px; }.stat-card p:nth-child(2) { font-size: 20px; }.morning-screen img { object-fit: contain; } }
