@@ -306,7 +306,7 @@ export function SuperAdminDashboard() {
               View all <ArrowRight size={12} />
             </Link>
           </div>
-          <div className="space-y-3">{sys.recent_logins.map((entry: any, i: number) => <div key={entry.id ?? i} className="member-recent-row"><LogIn size={18} /><div><p className="text-sm font-semibold">{entry.user_name ?? entry.name ?? 'User login'}</p><p className="text-xs text-muted-foreground">{entry.login_at ? formatDateTime(entry.login_at) : entry.created_at ? formatDateTime(entry.created_at) : ''}</p></div></div>)}</div>
+          <div className="space-y-3">{sys.recent_logins.map((entry: any, i: number) => <div key={entry.id ?? i} className="member-recent-row"><LogIn size={18} /><div><p className="text-sm font-semibold">{entry.user_name ?? entry.name ?? 'User login'}</p><p className="text-xs text-muted-foreground">{entry.date ? formatDateTime(entry.date) : entry.login_at ? formatDateTime(entry.login_at) : entry.created_at ? formatDateTime(entry.created_at) : ''}</p></div></div>)}</div>
         </Card>
       </div>
 

@@ -1,5 +1,6 @@
 # Visual transformation
-- [ ] Add floral background rotation and coordinated themes across existing pages.
-- [ ] Add the once-daily five-second morning screen.
-- [ ] Restyle sign-in, shared navigation and role dashboards while preserving all data and APIs.
-- [ ] Verify daily timing, existing sign-in/navigation and desktop/mobile presentation.
+- [x] Add floral background rotation and coordinated themes across existing pages.
+- [x] Add the once-daily five-second morning screen.
+- [x] Restyle sign-in, shared navigation and role dashboards while preserving all data and APIs.
+- [x] Verify daily timing, existing sign-in/navigation and desktop/mobile presentation.
+Live Laravel sign-in and private records remain unverified; no production session was supplied. Existing API contracts and demo/live behavior are unchanged.
