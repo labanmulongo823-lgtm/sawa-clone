@@ -33,6 +33,7 @@ import MemberNotifications from '@/pages/member/MemberNotifications';
 import MemberProfile from '@/pages/member/MemberProfile';
 import PayPenalty from '@/pages/member/PayPenalty';
 import Donate from '@/pages/member/Donate';
+import WelfareContribution from '@/pages/member/WelfareContribution';
 import ExecutiveDashboard from '@/pages/member/ExecutiveDashboard';
 
 // Treasurer pages
@@ -139,6 +140,7 @@ export default function App() {
               <Route path="/member/profile" element={<MemberProfile />} />
               <Route path="/member/pay-penalty" element={<PayPenalty />} />
               <Route path="/member/donate" element={<Donate />} />
+              <Route path="/member/welfare-contribution" element={<WelfareContribution />} />
               <Route path="/member/executive/:roleName" element={<ExecutiveDashboard />} />
             </Route>
 

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Download, FileText, IdCard, Receipt, Calendar } from 'lucide-react';
+import { Download, Eye, FileText, IdCard, Receipt, Calendar } from 'lucide-react';
 import { mockMember } from '@/api/mock';
 import { queryKeys } from '@/lib/query';
 import {
-  Card, Button, Input, PageHeader, EmptyState, ErrorState, LoadingState,
+  Card, Button, Input, Modal, PageHeader, EmptyState, ErrorState, LoadingState,
 } from '@/components/ui';
-import { formatDate, downloadCSV } from '@/lib/format';
+import { formatCurrency, formatDate, downloadCSV } from '@/lib/format';
 import type { Contribution } from '@/types';
 
 interface DownloadOption {
@@ -20,6 +20,7 @@ interface DownloadOption {
 export default function MemberDownloads() {
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
+  const [viewStatement, setViewStatement] = useState(false);
 
   // Pull contributions to demo a statement export
   const { data, isLoading, isError, refetch } = useQuery({
@@ -106,6 +107,7 @@ export default function MemberDownloads() {
               </div>
               <h3 className="mt-3 text-sm font-semibold text-neutral-900">{opt.title}</h3>
               <p className="mt-1 text-xs text-neutral-500 flex-1">{opt.description}</p>
+              {opt.key === 'statement' && <Button variant="secondary" className="mt-4 w-full" onClick={() => setViewStatement(true)}><Eye size={15} />View statement</Button>}
               <Button variant="secondary" className="mt-4 w-full inline-flex items-center justify-center gap-2" onClick={opt.action}>
                 <Download size={15} /> Download
               </Button>
@@ -113,6 +115,17 @@ export default function MemberDownloads() {
           ))}
         </div>
       )}
+      <Modal open={viewStatement} onClose={() => setViewStatement(false)} title="Contribution Statement" size="xl">
+        {contributions.filter(inRange).length === 0 ? <EmptyState icon={<FileText size={22} />} title="No contributions in this date range" /> : <>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead><tr>{['Date', 'Period', 'Type', 'Method', 'Reference', 'Amount', 'Status'].map(label => <th key={label} className="p-3 whitespace-nowrap border-b border-border">{label}</th>)}</tr></thead>
+              <tbody>{contributions.filter(inRange).map(c => <tr key={c.id}><td className="p-3 whitespace-nowrap border-b border-border">{formatDate(c.date)}</td><td className="p-3 border-b border-border">{c.period}</td><td className="p-3 border-b border-border">{c.type}</td><td className="p-3 border-b border-border">{c.method}</td><td className="p-3 border-b border-border">{c.reference}</td><td className="p-3 whitespace-nowrap border-b border-border">{formatCurrency(c.amount)}</td><td className="p-3 border-b border-border">{c.status}</td></tr>)}</tbody>
+            </table>
+          </div>
+          <Button variant="secondary" className="mt-5" onClick={exportStatement}><Download size={15} />Download statement</Button>
+        </>}
+      </Modal>
     </div>
   );
 }
