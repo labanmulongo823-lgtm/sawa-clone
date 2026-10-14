@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Shell } from "./$";
+import { Shell } from "@/components/shell/Shell";
 
 export const Route = createFileRoute("/")({
   ssr: false,

@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { Shell } from "@/components/shell/Shell";
 
-const SawaApp = lazy(() => import("@/SawaApp"));
 
 export const Route = createFileRoute("/$")({
   ssr: false,
@@ -16,13 +15,3 @@ export const Route = createFileRoute("/$")({
   component: Shell,
 });
 
-export function Shell() {
-  const [ready, setReady] = useState(false);
-  useEffect(() => setReady(true), []);
-  if (!ready) return null;
-  return (
-    <Suspense fallback={null}>
-      <SawaApp />
-    </Suspense>
-  );
-}
