@@ -342,38 +342,39 @@ export default function ChatPage({ preselectedConversationId, className }: ChatP
 
   return (
     <div className={classNames(
-      className || 'flex flex-col h-[calc(100dvh-88px)] min-h-[560px] lg:h-[calc(100vh-140px)] bg-white rounded-[24px] shadow-[0_18px_60px_rgba(64,48,126,0.10)] border border-[#eeeafb] overflow-hidden',
-      className && 'flex flex-col bg-white overflow-hidden',
+      'member-chat flex flex-col overflow-hidden',
+      className || 'member-chat-page',
     )}>
       {/* Notification toggle - top bar */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-[#6c55c7] border-b border-[#5943b5]">
+      <div className="chat-toolbar flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-white text-[#6c55c7] shadow-sm">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-surface text-primary">
             <MessageSquare size={16} />
           </div>
           <div>
             <h1 className="text-sm font-bold text-white">Messages</h1>
-            <p className="text-[10px] text-white/70">Stay connected with your team</p>
+            <p className="text-xs text-white/70">KHWWC members</p>
           </div>
           {isDemo && (
             <span className="px-1.5 py-0.5 rounded text-2xs font-medium bg-white/15 text-white">Demo</span>
           )}
         </div>
-        <button
+        <Button variant="ghost"
           onClick={requestNotificationPermission}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-white/85 hover:bg-white/10 transition-colors"
+          className="chat-notifications flex items-center gap-1.5 px-2.5 py-1.5 text-xs"
+          aria-label={notificationsEnabled ? 'Notifications on' : 'Enable notifications'}
           title="Enable push notifications"
         >
           {notificationsEnabled ? <Bell size={14} /> : <BellOff size={14} />}
           <span className="hidden sm:inline">{notificationsEnabled ? 'Notifications on' : 'Enable notifications'}</span>
-        </button>
+        </Button>
       </div>
 
       <div className="flex flex-1 overflow-hidden">
         {/* Conversation List */}
         <div className={classNames(
-          'flex flex-col border-r border-[#eeeafb] bg-white',
-          activeConv ? 'hidden md:flex w-72' : 'flex flex-1 md:w-72',
+          'chat-conversations flex flex-col border-r border-border bg-white',
+          activeConv ? 'hidden md:flex w-72 shrink-0' : 'flex flex-1 md:flex-none md:w-72',
         )}>
           <div className="px-3 py-3 border-b border-neutral-100 space-y-2">
             <div className="flex items-center gap-2">
@@ -384,16 +385,18 @@ export default function ChatPage({ preselectedConversationId, className }: ChatP
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search conversations..."
-                  className="w-full pl-8 pr-3 py-2.5 rounded-xl bg-[#f7f6fb] text-sm text-neutral-900 placeholder:text-neutral-400 border border-transparent focus:border-[#c8bdf4] focus:ring-2 focus:ring-[#8d79df]/20 outline-none transition-all"
+                  className="input-field w-full pl-8 pr-3 py-2.5 text-sm"
+                  aria-label="Search conversations"
                 />
               </div>
-              <button
+              <Button
                 onClick={() => setShowNewGroup(true)}
-                className="flex items-center justify-center w-10 h-10 rounded-xl bg-[#6c55c7] text-white hover:bg-[#5943b5] shadow-[0_7px_18px_rgba(108,85,199,0.24)] transition-all flex-shrink-0"
+                className="w-10 h-10 p-0 flex-shrink-0"
+                aria-label="New group chat"
                 title="New group chat"
               >
                 <Plus size={18} />
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -578,15 +581,17 @@ export default function ChatPage({ preselectedConversationId, className }: ChatP
                   rows={1}
                   className="flex-1 resize-none rounded-xl bg-neutral-100 px-3 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 border-0 focus:ring-2 focus:ring-primary-500/30 outline-none max-h-32"
                   style={{ minHeight: '40px' }}
+                  aria-label="Message"
                 />
-                <button
+                <Button
                   onClick={handleSend}
                   disabled={!input.trim()}
-                  className="flex items-center justify-center w-10 h-10 rounded-xl bg-[#6c55c7] text-white hover:bg-[#5943b5] disabled:bg-neutral-300 disabled:cursor-not-allowed transition-colors flex-shrink-0 shadow-[0_6px_14px_rgba(108,85,199,0.22)]"
+                  className="w-10 h-10 p-0 flex-shrink-0"
+                  aria-label="Send message"
                   title="Send"
                 >
                   <Send size={18} />
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -796,7 +801,7 @@ function MessageBubble({
 
         {/* Bubble */}
         <div className={classNames(
-          'relative rounded-2xl px-3.5 py-2.5 text-sm break-words',
+          'chat-bubble relative rounded-lg px-3.5 py-2.5 text-sm break-words',
           isMine
             ? 'bg-primary-500 text-white rounded-br-md'
             : 'bg-white text-neutral-800 border border-neutral-200 rounded-bl-md',
