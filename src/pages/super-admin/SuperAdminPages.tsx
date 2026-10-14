@@ -13,7 +13,7 @@ import { mockSuperAdmin, mockAdmin, mockTreasurer } from '@/api/mock';
 import { queryKeys } from '@/lib/query';
 import {
   Card, PageHeader, Badge, LoadingState, ErrorState,
-  EmptyState, Avatar, Pagination,
+  EmptyState, Avatar, Pagination, StatCard,
 } from '@/components/ui';
 import { formatCurrency, formatDate, formatDateTime, relativeTime, statusColor, initials, classNames } from '@/lib/format';
 import { GenericListPage, GenericDashboardPage, GenericFormPage, GenericDetailPage } from '@/components/GenericPages';
@@ -102,33 +102,6 @@ function KpiCard({ label, value, delta, positive, icon: Icon, accent, spark }: K
 //  ACTIVITY FEED
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const ACTIVITY_ITEMS = [
-  { icon: UserPlus,   text: 'New member registered',           detail: 'John Mutisya completed registration',    time: '2 min ago',   color: 'bg-primary-50 text-primary-600' },
-  { icon: Coins,      text: 'Contribution received',           detail: 'KSh 300 from Jane Wanjiku via M-Pesa',   time: '5 min ago',   color: 'bg-success-50 text-success-600' },
-  { icon: CreditCard, text: 'Payment processed',               detail: 'KSh 600 to Mary Atieno — funeral payout',time: '12 min ago',  color: 'bg-secondary-50 text-secondary-600' },
-  { icon: Landmark,   text: 'Bank statement synced',           detail: 'CB1179432 — 24 transactions imported',   time: '18 min ago',  color: 'bg-accent-50 text-accent-600' },
-  { icon: Archive,    text: 'System backup completed',          detail: 'Database and file storage — 2.4 GB',     time: '1 hr ago',    color: 'bg-neutral-100 text-neutral-500' },
-];
-
-function ActivityFeed() {
-  return (
-    <div className="space-y-1">
-      {ACTIVITY_ITEMS.map((a, i) => (
-        <div key={i} className="flex items-start gap-3 p-2.5 -mx-2.5 rounded-xl hover:bg-neutral-50 transition-colors">
-          <div className={classNames('w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0', a.color)}>
-            <a.icon size={16} />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-neutral-800">{a.text}</p>
-            <p className="text-xs text-neutral-400 mt-0.5 truncate">{a.detail}</p>
-          </div>
-          <span className="text-xs text-neutral-400 whitespace-nowrap flex-shrink-0">{a.time}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 // ═══════════════════════════════════════════════════════════════════════════════
 //  QUICK ACTION GRID
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -183,11 +156,12 @@ export function SuperAdminDashboard() {
 
   if (sysLoading || adminLoading) return <LoadingState />;
 
-  const sys = sysData!;
-  const adm = adminData!;
+  if (!sysData || !adminData) return <ErrorState message="Unable to load the overview." />;
+  const sys = sysData;
+  const adm = adminData;
 
   const trend = adm.contributions_trend ?? [];
-  const payTrend = trend.map(t => ({ label: t.month, value: Math.round(t.amount * 0.72) }));
+
   const sparkData = trend.map(t => t.amount);
 
   const activeCount = adm.active_members ?? 0;
@@ -204,7 +178,7 @@ export function SuperAdminDashboard() {
     .sort((a: any, b: any) => b.contribs - a.contribs)
     .slice(0, 5);
 
-  const activePct = Math.round((activeCount / totalMembers) * 100);
+  const activePct = totalMembers ? Math.round((activeCount / totalMembers) * 100) : 0;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -237,10 +211,10 @@ export function SuperAdminDashboard() {
 
       {/* ═══ KPI ROW ═══ */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard label="Total Members" value={totalMembers.toLocaleString()} delta="+2.4%" positive icon={Users} accent="bg-primary-50 text-primary-600" spark={sparkData} />
-        <KpiCard label="Contributions" value={formatCurrency(adm.total_contributions ?? 4200000)} delta="+18%" positive icon={Coins} accent="bg-success-50 text-success-600" spark={sparkData} />
-        <KpiCard label="Payments" value={formatCurrency(Math.round((adm.total_contributions ?? 0) * 0.61))} delta="+22%" positive icon={CreditCard} accent="bg-secondary-50 text-secondary-600" spark={payTrend.map(p => p.value)} />
-        <KpiCard label="Bank Pending" value={pendingBank || 3} delta="Review" positive={false} icon={Landmark} accent="bg-accent-50 text-accent-600" spark={[5, 3, 7, 4, 2, 3]} />
+        <StatCard label="Total members" value={totalMembers} icon={<Users size={20} />} />
+        <StatCard label="Contributions" value={formatCurrency(adm.total_contributions)} icon={<Coins size={20} />} color="success" />
+        <StatCard label="Online users" value={sys.online_users} icon={<Activity size={20} />} color="secondary" />
+        <StatCard label="Pending approvals" value={pendingCount} icon={<Shield size={20} />} color="warning" />
       </div>
 
       {/* ═══ CHARTS ROW ═══ */}
@@ -250,21 +224,18 @@ export function SuperAdminDashboard() {
           <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="text-base font-bold text-neutral-900">Financial Overview</h3>
-              <p className="text-xs text-neutral-400 mt-0.5">Contributions vs Payments — last 6 months</p>
+              <p className="text-xs text-neutral-400 mt-0.5">Monthly contributions</p>
             </div>
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1.5 text-xs text-neutral-500">
                 <span className="w-2.5 h-2.5 rounded-full bg-primary-500" /> Contributions
               </span>
-              <span className="flex items-center gap-1.5 text-xs text-neutral-500">
-                <span className="w-2.5 h-2.5 rounded-full bg-success-500" /> Payments
-              </span>
+
             </div>
           </div>
           <LineChart
             series={[
-              { label: 'Contributions', color: '#088177', points: trend.map(t => ({ label: t.month, value: t.amount })) },
-              { label: 'Payments', color: '#22c55e', points: payTrend },
+              { label: 'Contributions', color: 'var(--brand)', points: trend.map(t => ({ label: t.month, value: t.amount })) },
             ]}
             height={220}
           />
@@ -277,9 +248,9 @@ export function SuperAdminDashboard() {
           <div className="flex flex-col items-center">
             <DonutChart
               segments={[
-                { label: 'Active', value: activeCount, color: '#088177' },
-                { label: 'Pending', value: pendingCount, color: '#f59e0b' },
-                { label: 'Inactive', value: inactiveCount, color: '#ef4444' },
+                { label: 'Active', value: activeCount, color: 'var(--brand)' },
+                { label: 'Pending', value: pendingCount, color: 'var(--warning)' },
+                { label: 'Inactive', value: inactiveCount, color: 'var(--danger)' },
               ]}
               centerLabel={String(totalMembers)}
               centerSub="Total"
@@ -287,8 +258,8 @@ export function SuperAdminDashboard() {
             <div className="w-full mt-5 space-y-2.5">
               {[
                 { label: 'Active', value: activeCount, pct: activePct, color: 'bg-primary-500' },
-                { label: 'Pending', value: pendingCount, pct: Math.round((pendingCount / totalMembers) * 100), color: 'bg-warning-500' },
-                { label: 'Inactive', value: inactiveCount, pct: Math.round((inactiveCount / totalMembers) * 100), color: 'bg-error-400' },
+                { label: 'Pending', value: pendingCount, pct: Math.round((pendingCount / (totalMembers || 1)) * 100), color: 'bg-warning-500' },
+                { label: 'Inactive', value: inactiveCount, pct: Math.round((inactiveCount / (totalMembers || 1)) * 100), color: 'bg-error-400' },
               ].map(s => (
                 <div key={s.label} className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -330,12 +301,12 @@ export function SuperAdminDashboard() {
         {/* Activity feed — 2 cols */}
         <Card className="p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-bold text-neutral-900">Recent Activity</h3>
+            <h3 className="text-base font-bold text-neutral-900">Recent logins</h3>
             <Link to="/super-admin/audit-logs" className="text-xs font-medium text-primary-600 hover:text-primary-700 flex items-center gap-1">
               View all <ArrowRight size={12} />
             </Link>
           </div>
-          <ActivityFeed />
+          <div className="space-y-3">{sys.recent_logins.map((entry: any, i: number) => <div key={entry.id ?? i} className="member-recent-row"><LogIn size={18} /><div><p className="text-sm font-semibold">{entry.user_name ?? entry.name ?? 'User login'}</p><p className="text-xs text-muted-foreground">{entry.login_at ? formatDateTime(entry.login_at) : entry.created_at ? formatDateTime(entry.created_at) : ''}</p></div></div>)}</div>
         </Card>
       </div>
 
@@ -374,7 +345,7 @@ export function SuperAdminDashboard() {
         {/* Top contributors */}
         <Card className="p-6">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-base font-bold text-neutral-900">Top Contributors</h3>
+            <h3 className="text-base font-bold text-neutral-900">Recent member contributions</h3>
             <Link to="/admin/members" className="text-xs font-medium text-primary-600 hover:text-primary-700 flex items-center gap-1">
               View all <ArrowRight size={12} />
             </Link>
@@ -500,26 +471,9 @@ export function SuperAdminDashboard() {
         )}
       </Card>
 
-      {/* ═══ SYSTEM STATUS STRIP ═══ */}
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-n26-card bg-neutral-900 px-6 py-4">
-        <div className="flex items-center gap-2">
-          <StatusDot status="online" />
-          <span className="text-sm font-semibold text-white">All systems operational</span>
-        </div>
-        <div className="flex flex-wrap items-center gap-6">
-          {[
-            { label: 'API Latency', value: '142ms', ok: true },
-            { label: 'Database', value: 'Healthy', ok: true },
-            { label: 'Cache', value: 'Connected', ok: true },
-            { label: 'Queue', value: '0 jobs', ok: true },
-          ].map(s => (
-            <div key={s.label} className="flex items-center gap-2">
-              <span className="text-xs text-neutral-400">{s.label}</span>
-              <span className={classNames('text-xs font-semibold', s.ok ? 'text-success-400' : 'text-error-400')}>{s.value}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {sys.system_health.map((metric: SystemMetric) => <StatCard key={metric.label} label={metric.label} value={metric.value} icon={<Server size={18} />} />)}
+      </section>
     </div>
   );
 }
